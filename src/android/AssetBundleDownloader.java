@@ -6,7 +6,6 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
@@ -94,11 +93,8 @@ class AssetBundleDownloader {
                         }
 
                         try {
-                            File file = IOUtils.writeToFile(response.body().source(), asset.getTemporaryFile());
-                            if (!file.renameTo(asset.getFile())) {
-                                throw new IOException("Failed to rename a temporary download file.");
-                            }
-                        } catch (Exception e) {
+                            IOUtils.writeToFile(response.body().source(), asset.getFile());
+                        } catch (IOException e) {
                             didFail(e);
                             return;
                         }
@@ -151,7 +147,7 @@ class AssetBundleDownloader {
             builder.addQueryParameter("meteor_dont_serve_index", "true");
         }
 
-        return builder.build();
+        return  builder.build();
     }
 
     protected void verifyResponse(Response response, AssetBundle.Asset asset) throws WebAppException {

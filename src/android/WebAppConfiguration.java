@@ -1,7 +1,6 @@
 package com.meteor.webapp;
 
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -63,27 +62,13 @@ class WebAppConfiguration {
     }
 
     public Set<String> getBlacklistedVersions() {
-        Set<String> blacklistedVersions = preferences.getStringSet("blacklistedVersions", Collections.EMPTY_SET);
-        Log.d("BLACKLIST", "getBlacklistedVersions: " + blacklistedVersions);
-        return blacklistedVersions;
+        return preferences.getStringSet("blacklistedVersions", Collections.EMPTY_SET);
     }
 
     public void addBlacklistedVersion(String version) {
-        Set<String> versionsForRetry = new HashSet<String>(preferences.getStringSet("versionsForRetry", Collections.EMPTY_SET));
         Set<String> blacklistedVersions = new HashSet<String>(getBlacklistedVersions());
-        Log.d("BLACKLIST", "versionsForRetry: " + versionsForRetry);
-
-        if (!versionsForRetry.contains(version) && !blacklistedVersions.contains(version)) {
-            Log.d("BLACKLIST", "adding faulty version for retry: " + version);
-            versionsForRetry.add(version);
-            preferences.edit().putStringSet("versionsForRetry", versionsForRetry).commit();
-        } else {
-            versionsForRetry.remove(version);
-            blacklistedVersions.add(version);
-            Log.d("BLACKLIST", "blacklisting version: " + version);
-            preferences.edit().putStringSet("versionsForRetry", versionsForRetry).commit();
-            preferences.edit().putStringSet("blacklistedVersions", blacklistedVersions).commit();
-        }
+        blacklistedVersions.add(version);
+        preferences.edit().putStringSet("blacklistedVersions", blacklistedVersions).commit();
     }
 
     public void reset() {
